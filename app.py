@@ -19,9 +19,15 @@ from flask import Flask, g, render_template, request, redirect, url_for, flash, 
 from translations import t as translate, LANGUAGES
 
 APP_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_PATH = os.path.join(APP_DIR, "procurement.db")
-SCHEMA_PATH = os.path.join(APP_DIR, "schema.sql")
 
+# Vercel's application directory is read-only.
+# /tmp is writable during a serverless execution.
+if os.environ.get("VERCEL"):
+    DB_PATH = "/tmp/procurement.db"
+else:
+    DB_PATH = os.path.join(APP_DIR, "procurement.db")
+
+SCHEMA_PATH = os.path.join(APP_DIR, "schema.sql")
 app = Flask(__name__)
 app.secret_key = "dev-secret-change-me"  # replace before any real deployment
 
@@ -515,6 +521,9 @@ def update_booking_status(booking_id):
 
 
 # ---------------------------------------------------------------------------
+# Initialize the database when the application starts.
+# This is required on Vercel because __main__ is not executed there.
+init_db()
+
 if __name__ == "__main__":
-    init_db()
     app.run(debug=True)
