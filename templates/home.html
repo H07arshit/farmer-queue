@@ -1,15 +1,86 @@
 {% extends "base.html" %}
 {% block title %}{{ t('brand') }}{% endblock %}
 {% block content %}
-<div class="hero">
-    <div class="hero-decor hero-decor1">🌳</div>
-    <div class="hero-decor hero-decor2">🚜</div>
-    <div class="hero-decor hero-decor3">🌾</div>
-    <h1>{{ t('hero_title') }}</h1>
-    <p>{{ t('hero_desc') }}</p>
-    <a class="btn btn-primary" href="#farmer-panel">{{ t('btn_register') }}</a>
-    <a class="btn" href="#admin-panel">{{ t('nav_admin') }}</a>
-</div>
+<!-- Animated Farm Hero -->
+<section class="farm-hero">
+
+    <!-- Sky -->
+    <div class="farm-sky">
+
+        <div class="sun"></div>
+
+        <!-- Clouds -->
+        <div class="cloud cloud-1"></div>
+        <div class="cloud cloud-2"></div>
+        <div class="cloud cloud-3"></div>
+
+        <!-- Hills -->
+        <div class="hill hill-back"></div>
+        <div class="hill hill-front"></div>
+
+    </div>
+
+    <!-- Hero text -->
+    <div class="farm-hero-content">
+        <span class="hero-badge">🌾 {{ t('brand') }}</span>
+
+        <h1>{{ t('hero_title') }}</h1>
+
+        <p>{{ t('hero_desc') }}</p>
+
+        <div class="hero-buttons">
+            <a class="btn btn-primary" href="#farmer-panel">
+                {{ t('btn_register') }}
+            </a>
+
+            <a class="btn hero-admin-btn" href="#admin-panel">
+                {{ t('nav_admin') }}
+            </a>
+        </div>
+    </div>
+
+    <!-- Farm ground -->
+    <div class="farm-ground">
+
+        <!-- Crop rows -->
+        <div class="crop-row crop-row-1">
+            🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱
+        </div>
+
+        <div class="crop-row crop-row-2">
+            🌾 🌾 🌾 🌾 🌾 🌾 🌾 🌾 🌾 🌾
+        </div>
+
+        <!-- Tractor -->
+        <div class="tractor-scene">
+
+            <div class="dust dust-1"></div>
+            <div class="dust dust-2"></div>
+            <div class="dust dust-3"></div>
+
+            <!-- Farmer -->
+            <div class="tractor-farmer">
+                🧑‍🌾
+            </div>
+
+            <!-- Tractor -->
+            <div class="tractor">
+                🚜
+
+                <div class="tractor-wheel wheel-front"></div>
+                <div class="tractor-wheel wheel-back"></div>
+            </div>
+
+        </div>
+
+        <!-- Foreground grass -->
+        <div class="grass">
+            🌿 🌿 🌿 🌿 🌿 🌿 🌿 🌿 🌿 🌿 🌿 🌿 🌿
+        </div>
+
+    </div>
+
+</section>
 
 <!-- Stats strip -->
 <div class="stats-grid">

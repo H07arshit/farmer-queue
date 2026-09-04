@@ -1,382 +1,2449 @@
+/* =========================================================
+   KISANQUEUE — MODERN FARMER PROCUREMENT UI
+   Compatible with existing Flask templates/classes
+   ========================================================= */
+
 :root {
-    --green: #2e7d32;
-    --green-dark: #1b5e20;
-    --green-light: #66bb6a;
-    --gold: #f4b400;
-    --sky-top: #aee1f9;
-    --sky-bottom: #eaf7e0;
-    --bg: #f6f8f4;
-    --card: #ffffff;
-    --border: #dfe6da;
-    --text: #202a1f;
+    --green-950: #12351b;
+    --green-900: #174d24;
+    --green-800: #1f6b32;
+    --green-700: #2f7d32;
+    --green-600: #3f9142;
+    --green-500: #58a957;
+    --green-100: #e9f6e8;
+    --green-50: #f4fbf3;
+
+    --gold-500: #e8ad28;
+    --gold-100: #fff5d9;
+
+    --blue-700: #245c91;
+    --blue-100: #eaf3fb;
+
+    --red-600: #c53b32;
+    --red-100: #fdebea;
+
+    --purple-700: #7042a5;
+    --purple-100: #f1eafb;
+
+    --bg: #f5f8f3;
+    --surface: #ffffff;
+    --surface-soft: #f8fbf7;
+
+    --text: #172018;
+    --text-soft: #5f6d61;
+    --text-muted: #7b877d;
+
+    --border: #dfe8dc;
+
+    --shadow-sm: 0 3px 12px rgba(23, 53, 29, 0.06);
+    --shadow-md: 0 10px 30px rgba(23, 53, 29, 0.09);
+    --shadow-lg: 0 18px 45px rgba(23, 53, 29, 0.13);
+
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+    --radius-xl: 28px;
+
+    --transition: 180ms ease;
 }
-* { box-sizing: border-box; }
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background: var(--bg);
+    min-height: 100vh;
+    font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Arial,
+        sans-serif;
+
+    background:
+        radial-gradient(
+            circle at 10% 0%,
+            rgba(88, 169, 87, 0.08),
+            transparent 30%
+        ),
+        var(--bg);
+
     color: var(--text);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
 }
 
-/* ---------- Top navigation ---------- */
+a {
+    color: inherit;
+}
+
+button,
+input,
+select {
+    font: inherit;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+::selection {
+    background: rgba(63, 145, 66, 0.2);
+}
+
+/* =========================================================
+   TOP NAVIGATION
+   ========================================================= */
+
 .topbar {
-    background: linear-gradient(90deg, var(--green-dark), var(--green));
-    color: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 14px 24px;
-    flex-wrap: wrap;
-    gap: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-}
-.topbar .brand { color: white; text-decoration: none; font-weight: 700; font-size: 1.15rem; }
-.topbar nav { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
-.topbar nav a { color: white; text-decoration: none; margin-left: 14px; font-size: 0.95rem; opacity: 0.92; transition: opacity 0.15s; }
-.topbar nav a:hover { opacity: 1; text-decoration: underline; }
-.lang-switch { margin-left: 18px; padding-left: 14px; border-left: 1px solid rgba(255,255,255,0.4); }
-.lang-btn { margin-left: 4px !important; padding: 3px 8px; border-radius: 6px; }
-.lang-btn.lang-active { background: rgba(255,255,255,0.22); font-weight: 700; text-decoration: none !important; }
-.lang-sep { opacity: 0.5; margin: 0 2px; }
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 
-/* ---------- Animated farm scene banner (every page) ---------- */
+    min-height: 70px;
+    padding: 12px clamp(16px, 4vw, 52px);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+
+    color: white;
+
+    background:
+        linear-gradient(
+            110deg,
+            rgba(18, 53, 27, 0.98),
+            rgba(31, 107, 50, 0.97)
+        );
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+
+    box-shadow:
+        0 8px 30px rgba(10, 40, 18, 0.16);
+
+    backdrop-filter: blur(14px);
+}
+
+.topbar .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+
+    color: white;
+    text-decoration: none;
+
+    font-size: 1.25rem;
+    font-weight: 850;
+    letter-spacing: -0.03em;
+
+    white-space: nowrap;
+
+    transition:
+        transform var(--transition),
+        opacity var(--transition);
+}
+
+.topbar .brand:hover {
+    transform: translateY(-1px);
+    opacity: 0.92;
+}
+
+.topbar nav {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.topbar nav a {
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+
+    padding: 8px 10px;
+    border-radius: 9px;
+
+    font-size: 0.9rem;
+    font-weight: 600;
+
+    transition:
+        background var(--transition),
+        color var(--transition),
+        transform var(--transition);
+}
+
+.topbar nav a:hover {
+    color: white;
+    background: rgba(255, 255, 255, 0.11);
+    transform: translateY(-1px);
+}
+
+.lang-switch {
+    margin-left: 8px;
+    padding-left: 12px;
+
+    border-left: 1px solid rgba(255, 255, 255, 0.22);
+
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.lang-btn {
+    margin-left: 0 !important;
+    padding: 6px 9px !important;
+    border-radius: 8px !important;
+}
+
+.lang-btn.lang-active {
+    background: rgba(255, 255, 255, 0.17);
+    font-weight: 800;
+    text-decoration: none !important;
+}
+
+.lang-sep {
+    opacity: 0.35;
+}
+
+/* =========================================================
+   FARM BANNER
+   ========================================================= */
+
 .farm-banner {
     position: relative;
-    height: 132px;
+    height: 138px;
+
     overflow: hidden;
-    background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-bottom) 100%);
-    border-bottom: 3px solid var(--green-light);
-    box-shadow: inset 0 -6px 18px rgba(0,0,0,0.05);
+
+    background:
+        linear-gradient(
+            180deg,
+            #a9def4 0%,
+            #d9f0dc 72%,
+            #8bc66b 100%
+        );
+
+    border-bottom: 3px solid var(--green-500);
+
+    box-shadow:
+        inset 0 -18px 35px rgba(21, 73, 28, 0.08);
 }
+
+.farm-banner::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0;
+
+    height: 25px;
+
+    background:
+        linear-gradient(
+            180deg,
+            transparent,
+            rgba(20, 76, 29, 0.12)
+        );
+
+    pointer-events: none;
+}
+
 .farm-banner .sun {
     position: absolute;
-    top: 10px; right: 40px;
+    top: 12px;
+    right: 7%;
+
     font-size: 36px;
-    animation: spin-slow 18s linear infinite;
-    filter: drop-shadow(0 0 10px rgba(244,180,0,0.65));
+
+    animation: gentleFloat 5s ease-in-out infinite;
+
+    filter:
+        drop-shadow(0 0 12px rgba(255, 205, 63, 0.6));
 }
+
 .farm-banner .cloud {
     position: absolute;
-    font-size: 26px;
-    opacity: 0.9;
-    filter: drop-shadow(2px 3px 2px rgba(0,0,0,0.08));
-}
-.farm-banner .cloud1 { top: 14px; animation: drift 22s linear infinite; }
-.farm-banner .cloud2 { top: 34px; font-size: 20px; animation: drift 30s linear infinite; animation-delay: -10s; }
-.farm-banner .bird { position: absolute; top: 20px; font-size: 14px; animation: drift 14s linear infinite; animation-delay: -4s; opacity: 0.8; }
 
-/* Curvy hills drawn as SVG bezier paths, layered for a parallax feel */
+    font-size: 25px;
+    opacity: 0.8;
+
+    filter:
+        drop-shadow(2px 3px 3px rgba(30, 70, 40, 0.08));
+}
+
+.farm-banner .cloud1 {
+    top: 16px;
+    animation: drift 34s linear infinite;
+}
+
+.farm-banner .cloud2 {
+    top: 38px;
+    font-size: 19px;
+    animation: drift 42s linear infinite;
+    animation-delay: -12s;
+}
+
+.farm-banner .bird {
+    position: absolute;
+    top: 22px;
+
+    font-size: 13px;
+    opacity: 0.65;
+
+    animation: drift 25s linear infinite;
+    animation-delay: -5s;
+}
+
 .farm-banner .hills {
     position: absolute;
-    left: 0; right: 0; bottom: 0;
+
+    left: 0;
+    right: 0;
+    bottom: 0;
+
     width: 115%;
-    height: 62px;
-}
-.hills-back path { fill: var(--green-light); opacity: 0.85; }
-.hills-back { animation: hillDrift 26s ease-in-out infinite; }
-.hills-front path { fill: url(#hillGradient); }
-.hills-front { z-index: 1; animation: hillDrift 18s ease-in-out infinite reverse; filter: drop-shadow(0 -2px 4px rgba(0,0,0,0.06)); }
-@keyframes hillDrift {
-    0%, 100% { transform: translateX(-3%); }
-    50% { transform: translateX(0%); }
+    height: 64px;
 }
 
-.farm-banner .tree, .farm-banner .fence {
+.hills-back path {
+    fill: #76b75d;
+    opacity: 0.65;
+}
+
+.hills-back {
+    animation: hillDrift 35s ease-in-out infinite;
+}
+
+.hills-front path {
+    fill: url(#hillGradient);
+}
+
+.hills-front {
+    z-index: 1;
+
+    animation:
+        hillDrift 28s ease-in-out infinite reverse;
+
+    filter:
+        drop-shadow(0 -2px 5px rgba(20, 65, 25, 0.1));
+}
+
+.farm-banner .tree,
+.farm-banner .fence {
     position: absolute;
     bottom: 8px;
     z-index: 2;
-    filter: drop-shadow(2px 3px 2px rgba(0,0,0,0.2));
+
+    filter:
+        drop-shadow(2px 3px 3px rgba(20, 55, 25, 0.2));
 }
-.tree1 { left: 6%; font-size: 26px; animation: sway 4s ease-in-out infinite; transform-origin: bottom center; }
-.tree2 { right: 8%; font-size: 22px; animation: sway 4.6s ease-in-out infinite reverse; transform-origin: bottom center; }
-.fence { left: 40%; bottom: 4px; font-size: 12px; opacity: 0.75; letter-spacing: -2px; z-index: 1; }
+
+.tree1 {
+    left: 6%;
+    font-size: 26px;
+
+    animation: softSway 5s ease-in-out infinite;
+    transform-origin: bottom center;
+}
+
+.tree2 {
+    right: 8%;
+    font-size: 22px;
+
+    animation: softSway 5.8s ease-in-out infinite reverse;
+    transform-origin: bottom center;
+}
+
+.fence {
+    left: 40%;
+    bottom: 4px;
+
+    font-size: 12px;
+    opacity: 0.65;
+    letter-spacing: -2px;
+}
 
 .farm-banner .crop-row {
     position: absolute;
-    bottom: 6px; left: 0; right: 0;
+
+    bottom: 6px;
+    left: 0;
+    right: 0;
+
     display: flex;
     justify-content: space-evenly;
+
     z-index: 2;
 }
+
 .farm-banner .sprout {
     font-size: 18px;
     display: inline-block;
+
     transform-origin: bottom center;
-    filter: drop-shadow(1px 2px 1px rgba(0,0,0,0.15));
+
+    filter:
+        drop-shadow(1px 2px 2px rgba(20, 55, 25, 0.15));
 }
-.sprout.d1 { animation: grow 3.2s ease-in-out infinite; }
-.sprout.d2 { animation: grow 3.6s ease-in-out infinite; animation-delay: -0.6s; }
-.sprout.d3 { animation: grow 2.8s ease-in-out infinite; animation-delay: -1.2s; }
-.sprout.d4 { animation: grow 3.4s ease-in-out infinite; animation-delay: -1.8s; }
+
+.sprout.d1 {
+    animation: gentleGrow 4s ease-in-out infinite;
+}
+
+.sprout.d2 {
+    animation: gentleGrow 4.6s ease-in-out infinite;
+    animation-delay: -0.8s;
+}
+
+.sprout.d3 {
+    animation: gentleGrow 3.8s ease-in-out infinite;
+    animation-delay: -1.5s;
+}
+
+.sprout.d4 {
+    animation: gentleGrow 4.4s ease-in-out infinite;
+    animation-delay: -2s;
+}
 
 .farm-banner .leaf {
     position: absolute;
+
     font-size: 16px;
     z-index: 3;
-    filter: drop-shadow(1px 2px 1px rgba(0,0,0,0.15));
-}
-.leaf1 { top: 46px; left: 12%; animation: sway 3s ease-in-out infinite; }
-.leaf2 { top: 40px; right: 18%; animation: sway 3.6s ease-in-out infinite reverse; }
 
-/* Tractor drives its own lane, farmer walks a separate lane above it */
+    filter:
+        drop-shadow(1px 2px 2px rgba(20, 55, 25, 0.14));
+}
+
+.leaf1 {
+    top: 46px;
+    left: 12%;
+
+    animation: softSway 4.5s ease-in-out infinite;
+}
+
+.leaf2 {
+    top: 40px;
+    right: 18%;
+
+    animation: softSway 5s ease-in-out infinite reverse;
+}
+
 .farm-banner .tractor-track {
     position: absolute;
-    bottom: 26px; left: 0; right: 0;
+
+    bottom: 26px;
+    left: 0;
+    right: 0;
+
     height: 30px;
     z-index: 4;
 }
+
 .tractor-drive {
     position: absolute;
+
     font-size: 24px;
-    animation: driveTractor 12s linear infinite;
-    filter: drop-shadow(2px 4px 3px rgba(0,0,0,0.3));
+
+    animation: driveTractor 19s linear infinite;
+
+    filter:
+        drop-shadow(2px 4px 3px rgba(20, 50, 25, 0.28));
 }
+
 .farm-banner .farmer-track {
     position: absolute;
-    bottom: 8px; left: 0; right: 0;
+
+    bottom: 8px;
+    left: 0;
+    right: 0;
+
     height: 30px;
     z-index: 5;
 }
+
 .farmer-walk {
     position: absolute;
-    font-size: 26px;
-    animation: walk 9s ease-in-out infinite;
-    filter: drop-shadow(2px 4px 3px rgba(0,0,0,0.3));
-}
-.farmer-bob { display: inline-block; animation: bob 0.5s ease-in-out infinite; }
 
-@keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-@keyframes drift { from { transform: translateX(-15%); } to { transform: translateX(115vw); } }
-@keyframes grow {
-    0%, 100% { transform: scaleY(0.75); }
-    50% { transform: scaleY(1); }
+    font-size: 26px;
+
+    animation: walk 16s ease-in-out infinite;
+
+    filter:
+        drop-shadow(2px 4px 3px rgba(20, 50, 25, 0.25));
 }
-@keyframes sway {
-    0%, 100% { transform: rotate(-10deg); }
-    50% { transform: rotate(10deg); }
+
+.farmer-bob {
+    display: inline-block;
+    animation: bob 0.75s ease-in-out infinite;
 }
+
+/* =========================================================
+   ANIMATIONS
+   ========================================================= */
+
+@keyframes gentleFloat {
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+@keyframes drift {
+    from {
+        transform: translateX(-20%);
+    }
+
+    to {
+        transform: translateX(120vw);
+    }
+}
+
+@keyframes gentleGrow {
+    0%, 100% {
+        transform: scaleY(0.86);
+    }
+
+    50% {
+        transform: scaleY(1);
+    }
+}
+
+@keyframes softSway {
+    0%, 100% {
+        transform: rotate(-5deg);
+    }
+
+    50% {
+        transform: rotate(5deg);
+    }
+}
+
 @keyframes bob {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-4px); }
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-3px);
+    }
 }
+
 @keyframes walk {
-    0%   { left: 2%;  transform: scaleX(1); }
-    46%  { left: 78%; transform: scaleX(1); }
-    50%  { left: 78%; transform: scaleX(-1); }
-    96%  { left: 2%;  transform: scaleX(-1); }
-    100% { left: 2%;  transform: scaleX(1); }
+    0% {
+        left: 2%;
+        transform: scaleX(1);
+    }
+
+    46% {
+        left: 78%;
+        transform: scaleX(1);
+    }
+
+    50% {
+        left: 78%;
+        transform: scaleX(-1);
+    }
+
+    96% {
+        left: 2%;
+        transform: scaleX(-1);
+    }
+
+    100% {
+        left: 2%;
+        transform: scaleX(1);
+    }
 }
+
 @keyframes driveTractor {
-    0%   { left: -8%; transform: scaleX(1); }
-    48%  { left: 92%; transform: scaleX(1); }
-    50%  { left: 92%; transform: scaleX(-1); }
-    98%  { left: -8%; transform: scaleX(-1); }
-    100% { left: -8%; transform: scaleX(1); }
+    0% {
+        left: -8%;
+        transform: scaleX(1);
+    }
+
+    48% {
+        left: 92%;
+        transform: scaleX(1);
+    }
+
+    50% {
+        left: 92%;
+        transform: scaleX(-1);
+    }
+
+    98% {
+        left: -8%;
+        transform: scaleX(-1);
+    }
+
+    100% {
+        left: -8%;
+        transform: scaleX(1);
+    }
 }
+
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(6px); }
-    to   { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
-.fade-in { animation: fadeIn 0.45s ease; }
+
+.fade-in {
+    animation: fadeIn 0.45s ease both;
+}
+
+/* =========================================================
+   MAIN CONTAINER
+   ========================================================= */
+
+.container {
+    width: min(1180px, calc(100% - 32px));
+    margin: 0 auto;
+    padding: 38px 0 55px;
+}
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.hero {
+    position: relative;
+
+    overflow: hidden;
+
+    min-height: 310px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    padding: clamp(30px, 6vw, 65px);
+
+    margin-bottom: 30px;
+
+    border: 1px solid rgba(58, 120, 62, 0.14);
+    border-radius: var(--radius-xl);
+
+    background:
+        linear-gradient(
+            115deg,
+            rgba(255,255,255,0.98),
+            rgba(237,248,233,0.94)
+        );
+
+    box-shadow: var(--shadow-lg);
+}
+
+.hero::before {
+    content: "";
+
+    position: absolute;
+
+    width: 380px;
+    height: 380px;
+
+    top: -170px;
+    right: -100px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(88, 169, 87, 0.23),
+            transparent 68%
+        );
+}
+
+.hero::after {
+    content: "";
+
+    position: absolute;
+
+    width: 240px;
+    height: 240px;
+
+    bottom: -150px;
+    left: -80px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(232, 173, 40, 0.16),
+            transparent 68%
+        );
+}
+
+.hero h1 {
+    position: relative;
+    z-index: 1;
+
+    max-width: 720px;
+
+    margin: 0 0 12px;
+
+    color: var(--green-950);
+
+    font-size: clamp(2rem, 5vw, 3.6rem);
+    line-height: 1.08;
+
+    letter-spacing: -0.045em;
+}
+
+.hero p {
+    position: relative;
+    z-index: 1;
+
+    max-width: 680px;
+
+    color: var(--text-soft);
+
+    font-size: clamp(1rem, 2vw, 1.15rem);
+}
+
+.hero .btn {
+    position: relative;
+    z-index: 2;
+}
+
+.hero-decor {
+    position: absolute;
+    z-index: 0;
+
+    opacity: 0.7;
+
+    filter:
+        drop-shadow(2px 4px 4px rgba(20, 60, 25, 0.12));
+}
+
+.hero-decor1 {
+    top: 20px;
+    right: 100px;
+
+    font-size: 40px;
+
+    animation: softSway 5s ease-in-out infinite;
+}
+
+.hero-decor2 {
+    right: 28px;
+    bottom: 22px;
+
+    font-size: 34px;
+}
+
+.hero-decor3 {
+    left: 22px;
+    bottom: 26px;
+
+    font-size: 28px;
+
+    animation: softSway 4s ease-in-out infinite reverse;
+}
+
+/* =========================================================
+   STATS
+   ========================================================= */
+
+.stats-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(190px, 1fr));
+
+    gap: 16px;
+
+    margin-bottom: 34px;
+}
+
+.stat-card {
+    position: relative;
+    overflow: hidden;
+
+    padding: 22px;
+
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+
+    box-shadow: var(--shadow-sm);
+
+    transition:
+        transform 220ms ease,
+        box-shadow 220ms ease,
+        border-color 220ms ease;
+}
+
+.stat-card::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+    right: 0;
+
+    height: 3px;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--green-700),
+            var(--green-500)
+        );
+
+    transform: scaleX(0);
+    transform-origin: left;
+
+    transition: transform 250ms ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+
+    border-color: rgba(63, 145, 66, 0.28);
+
+    box-shadow: var(--shadow-md);
+}
+
+.stat-card:hover::before {
+    transform: scaleX(1);
+}
+
+.stat-icon {
+    font-size: 28px;
+
+    filter:
+        drop-shadow(1px 2px 2px rgba(20, 60, 25, 0.13));
+}
+
+.stat-value {
+    margin-top: 5px;
+
+    color: var(--green-900);
+
+    font-size: 2rem;
+    line-height: 1.15;
+    font-weight: 850;
+
+    letter-spacing: -0.04em;
+}
+
+.stat-label {
+    margin-top: 4px;
+
+    color: var(--text-muted);
+
+    font-size: 0.84rem;
+    font-weight: 600;
+}
+
+/* =========================================================
+   PANELS
+   ========================================================= */
+
+.panel-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(310px, 1fr));
+
+    gap: 22px;
+
+    margin-bottom: 38px;
+}
+
+.login-panel {
+    position: relative;
+
+    overflow: hidden;
+
+    padding: 28px;
+
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+
+    box-shadow: var(--shadow-md);
+
+    transition:
+        transform 220ms ease,
+        box-shadow 220ms ease;
+}
+
+.login-panel:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+.login-panel::after {
+    content: "";
+
+    position: absolute;
+
+    width: 160px;
+    height: 160px;
+
+    right: -80px;
+    bottom: -90px;
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,0.5);
+}
+
+.farmer-theme {
+    background:
+        linear-gradient(
+            145deg,
+            #eef9ea,
+            #ffffff
+        );
+
+    border-top: 4px solid var(--green-600);
+}
+
+.admin-theme {
+    background:
+        linear-gradient(
+            145deg,
+            #edf5fd,
+            #ffffff
+        );
+
+    border-top: 4px solid var(--blue-700);
+}
+
+.panel-icon {
+    font-size: 32px;
+
+    filter:
+        drop-shadow(1px 3px 3px rgba(20, 60, 25, 0.13));
+}
+
+.login-panel h2 {
+    margin: 8px 0 4px;
+
+    color: var(--green-950);
+
+    font-size: 1.35rem;
+    letter-spacing: -0.02em;
+}
+
+.panel-desc {
+    margin-top: 0;
+
+    color: var(--text-soft);
+
+    font-size: 0.9rem;
+}
+
+.panel-form {
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+
+    margin-top: 18px;
+}
+
+.btn-block {
+    width: 100%;
+    text-align: center;
+}
+
+.logged-in-note {
+    padding: 10px 12px;
+
+    background: rgba(255,255,255,0.72);
+
+    border: 1px solid rgba(50, 100, 55, 0.1);
+    border-radius: var(--radius-sm);
+
+    font-size: 0.85rem;
+}
+
+/* =========================================================
+   CITY / CENTRE
+   ========================================================= */
+
+.city-heading {
+    margin: 30px 0 12px;
+
+    color: var(--green-900);
+
+    font-size: 1.25rem;
+    letter-spacing: -0.02em;
+}
+
+.code-badge {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 4px 9px;
+
+    background: var(--green-700);
+    color: white;
+
+    font-size: 0.72rem;
+    font-weight: 800;
+
+    border-radius: 999px;
+
+    letter-spacing: 0.5px;
+
+    box-shadow:
+        0 3px 8px rgba(47, 125, 50, 0.2);
+}
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 42px;
+
+    padding: 9px 17px;
+
+    border: 1px solid var(--border);
+    border-radius: 10px;
+
+    background: white;
+    color: var(--text);
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    font-size: 0.93rem;
+    font-weight: 700;
+
+    margin-right: 7px;
+
+    box-shadow: 0 2px 6px rgba(20, 50, 25, 0.04);
+
+    transition:
+        transform 180ms ease,
+        box-shadow 180ms ease,
+        background 180ms ease,
+        border-color 180ms ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 7px 17px rgba(20, 55, 25, 0.11);
+
+    border-color: #ccd9c9;
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.btn:focus-visible {
+    outline: 3px solid rgba(63, 145, 66, 0.25);
+    outline-offset: 2px;
+}
+
+.btn-primary {
+    color: white;
+    background:
+        linear-gradient(
+            135deg,
+            var(--green-700),
+            var(--green-800)
+        );
+
+    border-color: var(--green-700);
+
+    box-shadow:
+        0 7px 16px rgba(47, 125, 50, 0.2);
+}
+
+.btn-primary:hover {
+    color: white;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--green-800),
+            var(--green-900)
+        );
+
+    border-color: var(--green-800);
+
+    box-shadow:
+        0 10px 22px rgba(47, 125, 50, 0.25);
+}
+
+.btn-sm {
+    min-height: 34px;
+
+    padding: 6px 11px;
+
+    font-size: 0.82rem;
+}
+
+.input-sm {
+    width: 100px;
+    padding: 7px 9px;
+
+    margin-right: 6px;
+}
+
+/* =========================================================
+   CARDS
+   ========================================================= */
+
+.card-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(230px, 1fr));
+
+    gap: 18px;
+}
+
+.card {
+    position: relative;
+
+    padding: 21px;
+
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+
+    box-shadow: var(--shadow-sm);
+
+    transition:
+        transform 220ms ease,
+        box-shadow 220ms ease,
+        border-color 220ms ease;
+}
+
+.card-anim:hover {
+    transform: translateY(-5px);
+
+    border-color: rgba(63, 145, 66, 0.23);
+
+    box-shadow: var(--shadow-md);
+}
+
+.card-icon {
+    margin-bottom: 6px;
+
+    font-size: 27px;
+}
+
+/* =========================================================
+   FORMS
+   ========================================================= */
+
+.form-card {
+    width: 100%;
+    max-width: 560px;
+
+    padding: 28px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+
+    box-shadow: var(--shadow-md);
+}
+
+.form-inline {
+    display: flex;
+
+    align-items: end;
+    flex-wrap: wrap;
+
+    gap: 12px;
+
+    margin-bottom: 18px;
+
+    background: none;
+    border: none;
+    padding: 0;
+
+    box-shadow: none;
+}
+
+.inline-form {
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    flex-wrap: wrap;
+}
+
+label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    color: var(--text);
+
+    font-size: 0.88rem;
+    font-weight: 700;
+}
+
+input,
+select {
+    width: 100%;
+
+    min-height: 43px;
+
+    padding: 10px 12px;
+
+    background: white;
+
+    color: var(--text);
+
+    border: 1px solid #d5e0d3;
+    border-radius: 10px;
+
+    font-size: 0.95rem;
+
+    transition:
+        border-color 180ms ease,
+        box-shadow 180ms ease,
+        background 180ms ease;
+}
+
+input:hover,
+select:hover {
+    border-color: #bdceb9;
+}
+
+input:focus,
+select:focus {
+    outline: none;
+
+    border-color: var(--green-600);
+
+    box-shadow:
+        0 0 0 4px rgba(63, 145, 66, 0.12);
+
+    background: #fdfffc;
+}
+
+input::placeholder {
+    color: #9aa49c;
+}
+
+input:disabled,
+select:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+/* =========================================================
+   TABLES
+   ========================================================= */
+
+.data-table {
+    width: 100%;
+
+    border-collapse: separate;
+    border-spacing: 0;
+
+    margin-top: 16px;
+
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+
+    overflow: hidden;
+
+    box-shadow: var(--shadow-sm);
+}
+
+.data-table th,
+.data-table td {
+    padding: 12px 13px;
+
+    border-bottom: 1px solid var(--border);
+
+    text-align: left;
+
+    font-size: 0.88rem;
+}
+
+.data-table th {
+    color: var(--green-900);
+
+    background:
+        linear-gradient(
+            180deg,
+            #f0f6ed,
+            #e9f2e5
+        );
+
+    font-weight: 800;
+}
+
+.data-table tr:last-child td {
+    border-bottom: none;
+}
+
+.data-table tbody tr {
+    transition: background 160ms ease;
+}
+
+.data-table tbody tr:hover {
+    background: #f6fbf4;
+}
+
+/* =========================================================
+   FLASH MESSAGES
+   ========================================================= */
+
+.flash {
+    position: relative;
+
+    padding: 12px 15px;
+
+    margin-bottom: 18px;
+
+    border-radius: 11px;
+
+    border: 1px solid transparent;
+
+    box-shadow: var(--shadow-sm);
+
+    animation: fadeIn 0.35s ease both;
+
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.flash-success {
+    color: #216c2a;
+
+    background: var(--green-100);
+
+    border-color: #c8e5c6;
+}
+
+.flash-error {
+    color: #a62d27;
+
+    background: var(--red-100);
+
+    border-color: #f2c9c5;
+}
+
+.flash-info {
+    color: #24598b;
+
+    background: var(--blue-100);
+
+    border-color: #c9ddef;
+}
+
+/* =========================================================
+   STATUS BADGES
+   ========================================================= */
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+
+    min-height: 25px;
+
+    padding: 4px 9px;
+
+    border-radius: 999px;
+
+    font-size: 0.75rem;
+    font-weight: 800;
+
+    white-space: nowrap;
+}
+
+.badge-booked {
+    color: #245c91;
+    background: var(--blue-100);
+}
+
+.badge-arrived {
+    color: #936000;
+    background: var(--gold-100);
+}
+
+.badge-procured {
+    color: var(--purple-700);
+    background: var(--purple-100);
+}
+
+.badge-paid {
+    color: #247431;
+    background: var(--green-100);
+}
+
+/* =========================================================
+   LIVE QUEUE
+   ========================================================= */
+
+.now-serving {
+    position: relative;
+
+    overflow: hidden;
+
+    padding: 30px;
+
+    margin-bottom: 22px;
+
+    text-align: center;
+
+    color: white;
+
+    background:
+        radial-gradient(
+            circle at 85% 15%,
+            rgba(255,255,255,0.13),
+            transparent 25%
+        ),
+        linear-gradient(
+            135deg,
+            var(--green-600),
+            var(--green-950)
+        );
+
+    border-radius: var(--radius-lg);
+
+    box-shadow:
+        0 14px 35px rgba(23, 82, 31, 0.25);
+}
+
+.now-serving::after {
+    content: "";
+
+    position: absolute;
+
+    width: 180px;
+    height: 180px;
+
+    right: -90px;
+    bottom: -110px;
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,0.07);
+}
+
+.now-serving span {
+    display: block;
+
+    margin-bottom: 5px;
+
+    font-size: 0.95rem;
+    font-weight: 600;
+
+    opacity: 0.86;
+}
+
+.now-serving strong {
+    display: inline-block;
+
+    font-size: clamp(2.6rem, 8vw, 4rem);
+    line-height: 1;
+
+    font-weight: 900;
+
+    letter-spacing: -0.06em;
+
+    animation: queuePulse 2.2s ease-in-out infinite;
+}
+
+@keyframes queuePulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.035);
+    }
+}
+
+/* =========================================================
+   NOTIFICATIONS
+   ========================================================= */
+
+.notif-list {
+    list-style: none;
+
+    padding: 0;
+    margin: 0;
+}
+
+.notif-list li {
+    position: relative;
+
+    padding: 12px 14px;
+
+    margin-bottom: 8px;
+
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+    border-radius: 10px;
+
+    box-shadow: var(--shadow-sm);
+
+    transition:
+        transform 180ms ease,
+        box-shadow 180ms ease;
+}
+
+.notif-list li:hover {
+    transform: translateX(3px);
+    box-shadow: var(--shadow-md);
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+footer {
+    margin-top: 20px;
+
+    padding: 30px 18px;
+
+    color: var(--text-muted);
+
+    text-align: center;
+
+    border-top: 1px solid var(--border);
+
+    font-size: 0.86rem;
+}
+
+/* =========================================================
+   IMAGE SUPPORT
+   ========================================================= */
+
+/*
+   These classes can be used by your HTML if you later add
+   real farming photographs.
+*/
+
+.hero-image {
+    position: relative;
+
+    width: 100%;
+    min-height: 320px;
+
+    overflow: hidden;
+
+    border-radius: var(--radius-xl);
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(12, 48, 20, 0.78),
+            rgba(12, 48, 20, 0.28),
+            rgba(12, 48, 20, 0.08)
+        ),
+        url("/static/images/farm-hero.jpg")
+        center / cover no-repeat;
+
+    box-shadow: var(--shadow-lg);
+}
+
+.hero-image-content {
+    position: relative;
+    z-index: 2;
+
+    max-width: 650px;
+
+    padding: clamp(30px, 6vw, 65px);
+
+    color: white;
+}
+
+.hero-image-content h1 {
+    margin: 0 0 12px;
+
+    font-size: clamp(2rem, 5vw, 3.5rem);
+
+    line-height: 1.08;
+
+    letter-spacing: -0.045em;
+}
+
+.hero-image-content p {
+    max-width: 580px;
+
+    font-size: 1.05rem;
+
+    color: rgba(255,255,255,0.9);
+}
+
+.image-card {
+    position: relative;
+
+    overflow: hidden;
+
+    background: white;
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+
+    box-shadow: var(--shadow-sm);
+
+    transition:
+        transform 220ms ease,
+        box-shadow 220ms ease;
+}
+
+.image-card img {
+    display: block;
+
+    width: 100%;
+    height: 190px;
+
+    object-fit: cover;
+
+    transition: transform 400ms ease;
+}
+
+.image-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+.image-card:hover img {
+    transform: scale(1.04);
+}
+
+.image-card-content {
+    padding: 18px;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 800px) {
+
+    .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+
+        padding: 12px 16px;
+    }
+
+    .topbar nav {
+        width: 100%;
+
+        justify-content: flex-start;
+
+        overflow-x: auto;
+
+        padding-bottom: 3px;
+    }
+
+    .topbar nav a {
+        white-space: nowrap;
+    }
+
+    .lang-switch {
+        border-left: 0;
+
+        margin-left: 0;
+        padding-left: 0;
+
+        margin-top: 3px;
+    }
+
+    .farm-banner {
+        height: 115px;
+    }
+
+    .farm-banner .sun {
+        right: 6%;
+        font-size: 30px;
+    }
+
+    .container {
+        width: min(100% - 22px, 700px);
+        padding-top: 24px;
+    }
+
+    .hero {
+        min-height: 280px;
+
+        padding: 30px 24px;
+
+        border-radius: 20px;
+    }
+
+    .hero h1 {
+        font-size: clamp(2rem, 10vw, 3rem);
+    }
+
+    .hero-decor1 {
+        right: 25px;
+    }
+
+    .panel-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-card {
+        padding: 21px;
+    }
+
+    .data-table {
+        display: block;
+
+        overflow-x: auto;
+
+        white-space: nowrap;
+    }
+
+    .now-serving {
+        padding: 25px 18px;
+    }
+}
+
+/* =========================================================
+   SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 500px) {
+
+    .topbar .brand {
+        font-size: 1.08rem;
+    }
+
+    .topbar nav {
+        gap: 2px;
+    }
+
+    .topbar nav a {
+        padding: 7px 8px;
+
+        font-size: 0.82rem;
+    }
+
+    .farm-banner {
+        height: 98px;
+    }
+
+    .farm-banner .tractor-drive {
+        font-size: 20px;
+    }
+
+    .farm-banner .farmer-walk {
+        font-size: 22px;
+    }
+
+    .farm-banner .sprout {
+        font-size: 14px;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+
+        gap: 10px;
+    }
+
+    .stat-card {
+        padding: 16px 12px;
+    }
+
+    .stat-value {
+        font-size: 1.55rem;
+    }
+
+    .stat-icon {
+        font-size: 22px;
+    }
+
+    .hero {
+        padding: 27px 20px;
+    }
+
+    .hero p {
+        font-size: 0.95rem;
+    }
+
+    .card-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .btn {
+        width: 100%;
+
+        margin-right: 0;
+        margin-bottom: 7px;
+    }
+
+    .btn-sm {
+        width: auto;
+
+        margin-bottom: 0;
+    }
+
+    .inline-form {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .input-sm {
+        width: 100%;
+    }
+
+    .form-inline {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .now-serving strong {
+        font-size: 3rem;
+    }
+}
+
+/* =========================================================
+   ACCESSIBILITY
+   ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
-    .farm-banner .sun, .farm-banner .cloud, .farm-banner .bird,
-    .sprout, .leaf, .farmer-walk, .farmer-bob, .tractor-drive,
-    .tree, .hills-back, .hills-front, .fade-in {
+
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+    }
+}
+
+/* =========================================================
+   DARKER / HIGH CONTRAST TEXT HELPERS
+   ========================================================= */
+
+.text-muted {
+    color: var(--text-muted);
+}
+
+.text-soft {
+    color: var(--text-soft);
+}
+
+.text-green {
+    color: var(--green-800);
+}
+
+.text-center {
+    text-align: center;
+}
+
+/* =========================================================
+   PRINT
+   ========================================================= */
+
+@media print {
+
+    .topbar,
+    .farm-banner,
+    .btn {
+        display: none !important;
+    }
+
+    body {
+        background: white;
+    }
+
+    .container {
+        width: 100%;
+        max-width: none;
+    }
+
+    .card,
+    .form-card,
+    .data-table,
+    .now-serving {
+        box-shadow: none;
+    }
+}
+
+/* =========================================================
+   FARMER + TRACTOR ANIMATED HERO
+   ========================================================= */
+
+.farm-hero {
+    position: relative;
+    min-height: 620px;
+    overflow: hidden;
+    border-radius: 0 0 35px 35px;
+    background: #87ceeb;
+    isolation: isolate;
+}
+
+/* -------------------------
+   SKY
+   ------------------------- */
+
+.farm-sky {
+    position: absolute;
+    inset: 0 0 210px 0;
+    background:
+        linear-gradient(
+            to bottom,
+            #75c9f5 0%,
+            #b9e8ff 55%,
+            #eaf8ff 100%
+        );
+    overflow: hidden;
+}
+
+/* Sun */
+
+.sun {
+    position: absolute;
+    width: 95px;
+    height: 95px;
+    border-radius: 50%;
+    background: #ffd45c;
+    top: 65px;
+    right: 12%;
+    box-shadow:
+        0 0 30px rgba(255, 211, 76, 0.65),
+        0 0 70px rgba(255, 211, 76, 0.35);
+    animation: sunGlow 4s ease-in-out infinite alternate;
+}
+
+@keyframes sunGlow {
+    from {
+        transform: scale(1);
+    }
+
+    to {
+        transform: scale(1.08);
+    }
+}
+
+/* -------------------------
+   CLOUDS
+   ------------------------- */
+
+.cloud {
+    position: absolute;
+    width: 120px;
+    height: 35px;
+    background: rgba(255,255,255,0.85);
+    border-radius: 50px;
+    filter: blur(1px);
+}
+
+.cloud::before,
+.cloud::after {
+    content: "";
+    position: absolute;
+    background: inherit;
+    border-radius: 50%;
+}
+
+.cloud::before {
+    width: 55px;
+    height: 55px;
+    left: 20px;
+    bottom: 5px;
+}
+
+.cloud::after {
+    width: 70px;
+    height: 70px;
+    right: 15px;
+    bottom: 0;
+}
+
+.cloud-1 {
+    top: 70px;
+    left: -180px;
+    animation: cloudMove 35s linear infinite;
+}
+
+.cloud-2 {
+    top: 145px;
+    left: -300px;
+    transform: scale(0.7);
+    animation: cloudMove 45s linear infinite;
+    animation-delay: 8s;
+}
+
+.cloud-3 {
+    top: 35px;
+    left: -400px;
+    transform: scale(0.55);
+    animation: cloudMove 55s linear infinite;
+    animation-delay: 15s;
+}
+
+@keyframes cloudMove {
+    from {
+        left: -220px;
+    }
+
+    to {
+        left: 110%;
+    }
+}
+
+/* -------------------------
+   HILLS
+   ------------------------- */
+
+.hill {
+    position: absolute;
+    bottom: -50px;
+    width: 70%;
+    height: 180px;
+    border-radius: 50% 50% 0 0;
+}
+
+.hill-back {
+    left: -15%;
+    background: #7fbd77;
+    transform: rotate(2deg);
+}
+
+.hill-front {
+    right: -15%;
+    background: #68a967;
+    height: 150px;
+    transform: rotate(-2deg);
+}
+
+/* -------------------------
+   HERO CONTENT
+   ------------------------- */
+
+.farm-hero-content {
+    position: relative;
+    z-index: 10;
+    max-width: 850px;
+    margin: 0 auto;
+    padding: 70px 25px 0;
+    text-align: center;
+}
+
+.hero-badge {
+    display: inline-block;
+    padding: 9px 18px;
+    border-radius: 50px;
+    background: rgba(255,255,255,0.75);
+    backdrop-filter: blur(10px);
+    color: #23643b;
+    font-weight: 700;
+    font-size: 14px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+}
+
+.farm-hero-content h1 {
+    margin: 18px auto 12px;
+    max-width: 800px;
+    font-size: clamp(38px, 5vw, 68px);
+    line-height: 1.05;
+    color: #174f2c;
+    text-shadow: 0 3px 0 rgba(255,255,255,0.45);
+}
+
+.farm-hero-content p {
+    max-width: 650px;
+    margin: 0 auto 25px;
+    font-size: 18px;
+    line-height: 1.7;
+    color: #245337;
+}
+
+.hero-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.hero-admin-btn {
+    background: rgba(255,255,255,0.8);
+}
+
+/* -------------------------
+   FARM GROUND
+   ------------------------- */
+
+.farm-ground {
+    position: absolute;
+    z-index: 5;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 230px;
+
+    background:
+        repeating-linear-gradient(
+            -8deg,
+            #704521 0px,
+            #704521 18px,
+            #81542a 19px,
+            #81542a 35px
+        );
+
+    overflow: hidden;
+}
+
+/* Field highlight */
+
+.farm-ground::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -10%;
+    width: 120%;
+    height: 60px;
+    background: #79ad42;
+    border-radius: 50% 50% 0 0;
+}
+
+/* -------------------------
+   CROPS
+   ------------------------- */
+
+.crop-row {
+    position: absolute;
+    z-index: 3;
+    white-space: nowrap;
+    font-size: 27px;
+    letter-spacing: 7px;
+    opacity: 0.9;
+}
+
+.crop-row-1 {
+    top: 25px;
+    left: -100px;
+    animation: cropsSway 3s ease-in-out infinite alternate;
+}
+
+.crop-row-2 {
+    top: 65px;
+    right: -150px;
+    animation: cropsSway 3.5s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes cropsSway {
+    from {
+        transform: translateY(0) rotate(-1deg);
+    }
+
+    to {
+        transform: translateY(-4px) rotate(1deg);
+    }
+}
+
+/* -------------------------
+   TRACTOR SCENE
+   ------------------------- */
+
+.tractor-scene {
+    position: absolute;
+    z-index: 20;
+    bottom: 45px;
+    left: -180px;
+
+    width: 210px;
+    height: 120px;
+
+    animation:
+        tractorDrive 14s linear infinite,
+        tractorBounce 0.45s ease-in-out infinite alternate;
+}
+
+/* Tractor */
+
+.tractor {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+
+    font-size: 105px;
+    line-height: 1;
+
+    filter:
+        drop-shadow(0 12px 7px rgba(0,0,0,0.28));
+
+    transform: scaleX(-1);
+}
+
+/* Farmer */
+
+.tractor-farmer {
+    position: absolute;
+    z-index: 4;
+
+    left: 75px;
+    top: -8px;
+
+    font-size: 42px;
+
+    transform: rotate(-3deg);
+
+    animation: farmerBounce 0.45s ease-in-out infinite alternate;
+}
+
+@keyframes tractorDrive {
+    0% {
+        left: -230px;
+    }
+
+    100% {
+        left: calc(100% + 30px);
+    }
+}
+
+@keyframes tractorBounce {
+    from {
+        transform: translateY(0);
+    }
+
+    to {
+        transform: translateY(-4px);
+    }
+}
+
+@keyframes farmerBounce {
+    from {
+        transform: translateY(0) rotate(-3deg);
+    }
+
+    to {
+        transform: translateY(-3px) rotate(2deg);
+    }
+}
+
+/* -------------------------
+   TRACTOR WHEELS
+   ------------------------- */
+
+.tractor-wheel {
+    position: absolute;
+    border-radius: 50%;
+    border: 6px solid #222;
+    background: #444;
+
+    box-shadow:
+        inset 0 0 0 5px #111,
+        0 5px 8px rgba(0,0,0,0.3);
+
+    animation: wheelSpin 0.7s linear infinite;
+}
+
+.wheel-back {
+    width: 37px;
+    height: 37px;
+    left: 23px;
+    bottom: 8px;
+}
+
+.wheel-front {
+    width: 27px;
+    height: 27px;
+    left: 102px;
+    bottom: 6px;
+}
+
+@keyframes wheelSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* -------------------------
+   DUST
+   ------------------------- */
+
+.dust {
+    position: absolute;
+    z-index: -1;
+
+    width: 17px;
+    height: 17px;
+
+    border-radius: 50%;
+    background: rgba(214,178,122,0.7);
+
+    animation: dustCloud 1.5s ease-out infinite;
+}
+
+.dust-1 {
+    left: 10px;
+    bottom: 18px;
+}
+
+.dust-2 {
+    left: 25px;
+    bottom: 35px;
+    animation-delay: 0.4s;
+}
+
+.dust-3 {
+    left: 5px;
+    bottom: 50px;
+    animation-delay: 0.8s;
+}
+
+@keyframes dustCloud {
+    0% {
+        opacity: 0;
+        transform: scale(0.5) translate(0, 0);
+    }
+
+    30% {
+        opacity: 0.8;
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(2.5) translate(-50px, -25px);
+    }
+}
+
+/* -------------------------
+   FOREGROUND GRASS
+   ------------------------- */
+
+.grass {
+    position: absolute;
+    z-index: 30;
+    bottom: -7px;
+    left: -20px;
+    right: -20px;
+
+    white-space: nowrap;
+
+    font-size: 27px;
+    letter-spacing: 8px;
+
+    animation: grassMove 3s ease-in-out infinite alternate;
+}
+
+@keyframes grassMove {
+    from {
+        transform: skewX(-1deg);
+    }
+
+    to {
+        transform: skewX(1deg);
+    }
+}
+
+/* -------------------------
+   MOBILE
+   ------------------------- */
+
+@media (max-width: 768px) {
+
+    .farm-hero {
+        min-height: 650px;
+        border-radius: 0 0 25px 25px;
+    }
+
+    .farm-sky {
+        inset: 0 0 220px 0;
+    }
+
+    .farm-hero-content {
+        padding: 45px 18px 0;
+    }
+
+    .farm-hero-content h1 {
+        font-size: 38px;
+    }
+
+    .farm-hero-content p {
+        font-size: 15px;
+        line-height: 1.55;
+    }
+
+    .sun {
+        width: 65px;
+        height: 65px;
+        right: 8%;
+        top: 45px;
+    }
+
+    .farm-ground {
+        height: 225px;
+    }
+
+    .tractor-scene {
+        transform: scale(0.8);
+        transform-origin: bottom left;
+    }
+
+    .crop-row {
+        font-size: 20px;
+        letter-spacing: 3px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .tractor-scene,
+    .cloud,
+    .sun,
+    .tractor-wheel,
+    .tractor-farmer,
+    .dust,
+    .grass,
+    .crop-row {
         animation: none !important;
     }
 }
 
-/* ---------- Layout ---------- */
-.container { max-width: 900px; margin: 0 auto; padding: 24px; }
-.hero {
-    position: relative;
-    overflow: hidden;
-    background: linear-gradient(135deg, #ffffff 0%, #f1f8ec 100%);
-    border: 1px solid var(--border);
-    border-radius: 18px;
-    padding: 40px;
-    margin-bottom: 26px;
-    box-shadow: 0 6px 22px rgba(30, 90, 30, 0.08);
-}
-.hero::before, .hero::after {
-    content: "";
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(2px);
-    opacity: 0.35;
-    z-index: 0;
-}
-.hero::before {
-    width: 220px; height: 220px;
-    background: radial-gradient(circle, var(--green-light), transparent 70%);
-    top: -80px; right: -60px;
-}
-.hero::after {
-    width: 160px; height: 160px;
-    background: radial-gradient(circle, var(--gold), transparent 70%);
-    bottom: -60px; left: -40px;
-}
-.hero h1, .hero p, .hero .btn { position: relative; z-index: 1; }
-.hero h1 { margin-top: 0; color: var(--green-dark); }
-.hero-decor {
-    position: absolute;
-    z-index: 0;
-    opacity: 0.85;
-    filter: drop-shadow(2px 4px 3px rgba(0,0,0,0.12));
-}
-.hero-decor1 { top: 14px; right: 90px; font-size: 40px; animation: sway 4s ease-in-out infinite; }
-.hero-decor2 { bottom: 18px; right: 24px; font-size: 34px; }
-.hero-decor3 { bottom: 24px; left: 20px; font-size: 28px; animation: sway 3.4s ease-in-out infinite reverse; }
-
-/* ---------- Stats strip ---------- */
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 14px;
-    margin-bottom: 28px;
-}
-.stat-card {
-    background: linear-gradient(160deg, #ffffff, #eef6ea);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 18px;
-    text-align: center;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-.stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 18px rgba(30,90,30,0.12); }
-.stat-icon { font-size: 26px; filter: drop-shadow(1px 2px 2px rgba(0,0,0,0.15)); }
-.stat-value { font-size: 1.8rem; font-weight: 800; color: var(--green-dark); margin-top: 4px; }
-.stat-label { font-size: 0.82rem; color: #567; margin-top: 2px; }
-
-/* ---------- Login panels ---------- */
-.panel-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
-    margin-bottom: 32px;
-}
-.login-panel {
-    border-radius: 16px;
-    padding: 24px;
-    border: 1px solid var(--border);
-    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
-    scroll-margin-top: 20px;
-}
-.farmer-theme { background: linear-gradient(160deg, #f3fbee, #ffffff); border-top: 4px solid var(--green); }
-.admin-theme { background: linear-gradient(160deg, #eef4fc, #ffffff); border-top: 4px solid #2b6cb0; }
-.panel-icon { font-size: 30px; filter: drop-shadow(1px 2px 2px rgba(0,0,0,0.15)); }
-.login-panel h2 { margin: 6px 0 4px; }
-.panel-desc { font-size: 0.88rem; color: #567; margin-top: 0; }
-.panel-form { display: flex; flex-direction: column; gap: 12px; margin-top: 12px; }
-.btn-block { width: 100%; text-align: center; }
-.logged-in-note { font-size: 0.85rem; background: rgba(255,255,255,0.7); border-radius: 8px; padding: 8px 10px; }
-
-.city-heading { margin: 22px 0 10px; color: var(--green-dark); }
-.code-badge {
-    display: inline-block;
-    background: var(--green);
-    color: white;
-    font-size: 0.72rem;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 10px;
-    letter-spacing: 0.4px;
-}
-
-/* ---------- Buttons ---------- */
-.btn {
-    display: inline-block;
-    padding: 9px 16px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    background: white;
-    color: var(--text);
-    text-decoration: none;
-    cursor: pointer;
-    font-size: 0.95rem;
-    margin-right: 8px;
-    transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
-}
-.btn:hover { transform: translateY(-1px); box-shadow: 0 3px 10px rgba(0,0,0,0.08); }
-.btn-primary { background: var(--green); color: white; border-color: var(--green); }
-.btn-primary:hover { background: var(--green-dark); }
-.btn-sm { padding: 5px 10px; font-size: 0.85rem; }
-.input-sm { width: 100px; padding: 5px; margin-right: 6px; }
-
-/* ---------- Cards ---------- */
-.card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
-.card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 18px;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-.card-anim:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(30,90,30,0.1); }
-.card-icon { font-size: 24px; margin-bottom: 4px; }
-
-/* ---------- Forms ---------- */
-.form-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 24px;
-    max-width: 480px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.04);
-}
-.form-inline { display: flex; gap: 10px; align-items: end; flex-wrap: wrap; margin-bottom: 16px; background: none; border: none; padding: 0; box-shadow: none; }
-.inline-form { display: flex; gap: 6px; align-items: center; }
-label { display: flex; flex-direction: column; font-size: 0.9rem; gap: 4px; font-weight: 600; }
-input, select {
-    padding: 9px;
-    border-radius: 6px;
-    border: 1px solid var(--border);
-    font-size: 1rem;
-    font-weight: normal;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
-}
-input:focus, select:focus {
-    outline: none;
-    border-color: var(--green);
-    box-shadow: 0 0 0 3px rgba(46,125,50,0.15);
-}
-
-/* ---------- Tables ---------- */
-.data-table { width: 100%; border-collapse: collapse; margin-top: 12px; background: var(--card); border-radius: 8px; overflow: hidden; }
-.data-table th, .data-table td { border: 1px solid var(--border); padding: 9px 10px; text-align: left; font-size: 0.9rem; }
-.data-table th { background: #eef3ea; color: var(--green-dark); }
-.data-table tbody tr:hover { background: #f5faf2; }
-
-/* ---------- Flash / badges ---------- */
-.flash { padding: 10px 14px; border-radius: 8px; margin-bottom: 16px; animation: fadeIn 0.3s ease; }
-.flash-success { background: #e3f5e6; color: #1e7d32; }
-.flash-error { background: #fdeaea; color: #b3261e; }
-.flash-info { background: #e8f0fb; color: #1a4f8b; }
-.badge { padding: 3px 8px; border-radius: 12px; font-size: 0.78rem; font-weight: 600; }
-.badge-booked { background: #e8f0fb; color: #1a4f8b; }
-.badge-arrived { background: #fff4e0; color: #9a6400; }
-.badge-procured { background: #eee6fb; color: #5b2e9c; }
-.badge-paid { background: #e3f5e6; color: #1e7d32; }
-
-/* ---------- Queue "now serving" ---------- */
-.now-serving {
-    background: linear-gradient(135deg, var(--green), var(--green-dark));
-    color: white;
-    border-radius: 14px;
-    padding: 26px;
-    text-align: center;
-    margin-bottom: 20px;
-    box-shadow: 0 6px 20px rgba(27,94,32,0.25);
-}
-.now-serving span { display: block; font-size: 1rem; opacity: 0.9; }
-.now-serving strong { font-size: 3.2rem; animation: bob 1.4s ease-in-out infinite; display: inline-block; }
-
-.notif-list { list-style: none; padding: 0; }
-.notif-list li { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; margin-bottom: 6px; }
-
-footer { text-align: center; padding: 20px; color: #667; }
