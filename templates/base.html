@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ t('brand') }}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header class="topbar">
+        <a href="{{ url_for('home') }}" class="brand">{{ t('brand') }}</a>
+        <nav>
+            <a href="{{ url_for('register') }}">{{ t('nav_register') }}</a>
+            <a href="{{ url_for('my_status') }}">{{ t('nav_status') }}</a>
+            {% if current_admin_email %}
+                <a href="{{ url_for('admin_dashboard') }}">{{ t('nav_admin') }}</a>
+                <a href="{{ url_for('admin_logout') }}">{{ t('logout') }}</a>
+            {% else %}
+                <a href="{{ url_for('home') }}#admin-panel">{{ t('nav_admin') }}</a>
+            {% endif %}
+            {% if current_farmer_name %}
+                <a href="{{ url_for('farmer_logout') }}">{{ t('logout') }}</a>
+            {% endif %}
+            <span class="lang-switch">
+                {% for code, label in languages.items() %}
+                    <a href="{{ url_for('set_language', lang_code=code) }}"
+                       class="lang-btn {% if lang == code %}lang-active{% endif %}">{{ label }}</a>{% if not loop.last %}<span class="lang-sep">|</span>{% endif %}
+                {% endfor %}
+            </span>
+        </nav>
+    </header>
+
+    <div class="farm-banner" aria-hidden="true">
+        <div class="sun">☀️</div>
+        <div class="cloud cloud1">☁️</div>
+        <div class="cloud cloud2">☁️</div>
+        <div class="bird bird1">🕊️</div>
+
+        <!-- Curvy layered hills, drawn with SVG bezier paths for smooth curves -->
+        <svg class="hills hills-back" viewBox="0 0 800 120" preserveAspectRatio="none">
+            <path d="M0,70 C120,30 220,90 340,55 C460,20 560,80 680,50 C740,35 780,55 800,60 L800,120 L0,120 Z"></path>
+        </svg>
+        <svg class="hills hills-front" viewBox="0 0 800 120" preserveAspectRatio="none">
+            <defs>
+                <linearGradient id="hillGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="#4caf50"></stop>
+                    <stop offset="100%" stop-color="#1b5e20"></stop>
+                </linearGradient>
+            </defs>
+            <path d="M0,95 C100,60 200,100 320,75 C440,50 540,100 660,80 C730,68 770,85 800,90 L800,120 L0,120 Z"></path>
+        </svg>
+
+        <div class="tree tree1">🌳</div>
+        <div class="tree tree2">🌳</div>
+        <div class="fence">🪵🪵🪵🪵🪵🪵</div>
+
+        <div class="crop-row">
+            <span class="sprout d1">🌱</span>
+            <span class="sprout d2">🌾</span>
+            <span class="sprout d3">🌱</span>
+            <span class="sprout d4">🌾</span>
+            <span class="sprout d1">🌱</span>
+            <span class="sprout d3">🌾</span>
+            <span class="sprout d2">🌱</span>
+            <span class="sprout d4">🌾</span>
+            <span class="sprout d1">🌱</span>
+            <span class="sprout d3">🌾</span>
+        </div>
+
+        <div class="tractor-track">
+            <div class="tractor-drive">🚜</div>
+        </div>
+        <div class="farmer-track">
+            <div class="farmer-walk"><span class="farmer-bob">🧑‍🌾</span></div>
+        </div>
+
+        <span class="leaf leaf1">🍃</span>
+        <span class="leaf leaf2">🍃</span>
+    </div>
+
+    <main class="container fade-in">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash flash-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <small>{{ t('footer_note') }}</small>
+    </footer>
+</body>
+</html>

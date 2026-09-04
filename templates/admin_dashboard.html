@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}{{ t('admin_heading') }}{% endblock %}
+{% block content %}
+<h1>{{ t('admin_heading') }}</h1>
+<form method="GET" class="form-inline">
+    <label>{{ t('label_date') }} <input type="date" name="date" value="{{ slot_date }}" onchange="this.form.submit()"></label>
+</form>
+
+<table class="data-table">
+    <thead>
+        <tr><th>{{ t('th_centre') }}</th><th>{{ t('th_time') }}</th><th>{{ t('th_booked_capacity') }}</th><th>{{ t('th_now_serving') }}</th><th></th></tr>
+    </thead>
+    <tbody>
+        {% for s in slots %}
+        <tr>
+            <td>{{ s.center_name }}</td>
+            <td>{{ s.start_time }}–{{ s.end_time }}</td>
+            <td>{{ s.booked_count }} / {{ s.capacity }}</td>
+            <td>#{{ s.current_token }}</td>
+            <td>
+                <a class="btn" href="{{ url_for('admin_slot', slot_id=s.id) }}">{{ t('btn_manage') }}</a>
+                <a class="btn" href="{{ url_for('queue_board', slot_id=s.id) }}" target="_blank">{{ t('btn_queue_board_link') }}</a>
+            </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5">{{ t('no_slots') }}</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

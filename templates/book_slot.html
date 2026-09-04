@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}{{ t('book_heading') }}{% endblock %}
+{% block content %}
+<h1>{{ t('book_heading') }}</h1>
+<p>{{ t('welcome') }}, <strong>{{ farmer.name }}</strong> ({{ farmer.phone }})</p>
+
+<form method="POST" class="form-card">
+    <label>{{ t('label_centre') }}
+        <select name="center_id" required>
+            {% for c in centers %}
+            <option value="{{ c.id }}">{{ c.name }} — {{ c.location }}</option>
+            {% endfor %}
+        </select>
+    </label>
+
+    <label>{{ t('label_date') }}
+        <input type="date" name="slot_date" min="{{ today }}" required>
+    </label>
+
+    <label>{{ t('label_time') }}
+        <select name="start_time" required>
+            <option value="08:00">08:00 – 09:00</option>
+            <option value="09:00">09:00 – 10:00</option>
+            <option value="10:00">10:00 – 11:00</option>
+            <option value="11:00">11:00 – 12:00</option>
+            <option value="13:00">13:00 – 14:00</option>
+            <option value="14:00">14:00 – 15:00</option>
+            <option value="15:00">15:00 – 16:00</option>
+        </select>
+    </label>
+
+    <label>{{ t('label_crop') }}
+        <input type="text" name="crop_type" placeholder="{{ t('crop_placeholder') }}" required>
+    </label>
+
+    <label>{{ t('label_qty') }}
+        <input type="number" name="est_quantity" min="1" step="0.1" required>
+    </label>
+
+    <button type="submit" class="btn btn-primary">{{ t('btn_confirm') }}</button>
+</form>
+<p><small>{{ t('slot_note') }}</small></p>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}{{ t('register_heading') }}{% endblock %}
+{% block content %}
+<h1>{{ t('register_heading') }}</h1>
+<form method="POST" class="form-card">
+    <label>{{ t('label_name') }}
+        <input type="text" name="name" required>
+    </label>
+    <label>{{ t('label_phone') }}
+        <input type="tel" name="phone" pattern="[0-9]{10}" maxlength="10" required placeholder="{{ t('placeholder_phone') }}">
+    </label>
+    <label>{{ t('label_email') }}
+        <input type="email" name="email" placeholder="{{ t('placeholder_email') }}">
+    </label>
+    <label>{{ t('label_village') }}
+        <input type="text" name="village" required>
+    </label>
+    <button type="submit" class="btn btn-primary">{{ t('btn_continue') }}</button>
+</form>
+<p><small>{{ t('already_registered_note') }}</small></p>
+{% endblock %}

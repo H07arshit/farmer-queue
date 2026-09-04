@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}{{ t('status_heading') }}{% endblock %}
+{% block content %}
+<h1>{{ t('status_heading') }}</h1>
+<form method="GET" class="form-card form-inline">
+    <label>{{ t('label_phone') }}
+        <input type="tel" name="phone" value="{{ phone }}" pattern="[0-9]{10}" maxlength="10" required>
+    </label>
+    <button type="submit" class="btn btn-primary">{{ t('btn_lookup') }}</button>
+</form>
+
+{% if farmer %}
+<h2>{{ t('bookings_heading', name=farmer.name) }}</h2>
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>{{ t('th_centre') }}</th><th>{{ t('th_date') }}</th><th>{{ t('th_time') }}</th>
+            <th>{{ t('th_your_token') }}</th><th>{{ t('th_now_serving') }}</th>
+            <th>{{ t('th_crop') }}</th><th>{{ t('th_status') }}</th><th>{{ t('th_queue_board') }}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for b in bookings %}
+        <tr>
+            <td>{{ b.center_name }}</td>
+            <td>{{ b.slot_date }}</td>
+            <td>{{ b.start_time }}</td>
+            <td>#{{ b.token_number }}</td>
+            <td>#{{ b.current_token }}</td>
+            <td>{{ b.crop_type }}</td>
+            <td><span class="badge badge-{{ b.status|lower }}">{{ b.status }}</span></td>
+            <td><a href="{{ url_for('queue_board', slot_id=b.slot_id) }}">{{ t('view_link') }}</a></td>
+        </tr>
+        {% else %}
+        <tr><td colspan="8">{{ t('no_bookings') }}</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h2>{{ t('notifications_heading') }}</h2>
+<ul class="notif-list">
+    {% for n in notifications %}
+    <li><small>{{ n.created_at }}</small> — {{ n.message }}</li>
+    {% else %}
+    <li>{{ t('no_notifications') }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}{{ t('now_serving') }} — {{ slot.center_name }}{% endblock %}
+{% block content %}
+<h1>{{ slot.center_name }}</h1>
+<p>{{ slot.slot_date }} &middot; {{ slot.start_time }}–{{ slot.end_time }}</p>
+
+<div class="now-serving">
+    <span>{{ t('now_serving') }}</span>
+    <strong id="current-token">#{{ slot.current_token }}</strong>
+</div>
+
+<table class="data-table" id="queue-table">
+    <thead><tr><th>{{ t('th_token') }}</th><th>{{ t('th_farmer') }}</th><th>{{ t('th_status') }}</th></tr></thead>
+    <tbody id="queue-body">
+        {% for b in bookings %}
+        <tr>
+            <td>#{{ b.token_number }}</td>
+            <td>{{ b.farmer_name }}</td>
+            <td>{{ b.status }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script>
+const slotId = {{ slot.id }};
+async function refresh() {
+    try {
+        const res = await fetch(`/api/queue/${slotId}`);
+        const data = await res.json();
+        document.getElementById('current-token').textContent = '#' + data.current_token;
+        const body = document.getElementById('queue-body');
+        body.innerHTML = '';
+        data.bookings.forEach(b => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td>#${b.token_number}</td><td>${b.farmer_name}</td><td>${b.status}</td>`;
+            body.appendChild(tr);
+        });
+    } catch (e) {
+        console.error('Queue refresh failed', e);
+    }
+}
+setInterval(refresh, 4000);
+</script>
+{% endblock %}

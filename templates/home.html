@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block title %}{{ t('brand') }}{% endblock %}
+{% block content %}
+<div class="hero">
+    <div class="hero-decor hero-decor1">🌳</div>
+    <div class="hero-decor hero-decor2">🚜</div>
+    <div class="hero-decor hero-decor3">🌾</div>
+    <h1>{{ t('hero_title') }}</h1>
+    <p>{{ t('hero_desc') }}</p>
+    <a class="btn btn-primary" href="#farmer-panel">{{ t('btn_register') }}</a>
+    <a class="btn" href="#admin-panel">{{ t('nav_admin') }}</a>
+</div>
+
+<!-- Stats strip -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon">🧑‍🌾</div>
+        <div class="stat-value">{{ stats.total_farmers }}</div>
+        <div class="stat-label">{{ t('stats_farmers') }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">🏬</div>
+        <div class="stat-value">{{ stats.total_centers }}</div>
+        <div class="stat-label">{{ t('stats_centers') }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">🏙️</div>
+        <div class="stat-value">{{ stats.total_cities }}</div>
+        <div class="stat-label">{{ t('stats_cities') }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">🎫</div>
+        <div class="stat-value">{{ stats.total_bookings }}</div>
+        <div class="stat-label">{{ t('stats_bookings') }}</div>
+    </div>
+</div>
+
+<!-- Login panels -->
+<div class="panel-grid">
+    <div class="login-panel farmer-theme" id="farmer-panel">
+        <div class="panel-icon">🧑‍🌾</div>
+        <h2>{{ t('farmer_panel_heading') }}</h2>
+        <p class="panel-desc">{{ t('farmer_panel_desc') }}</p>
+        {% if current_farmer_name %}
+        <p class="logged-in-note">{{ t('logged_in_as') }}: <strong>{{ current_farmer_name }}</strong> — <a href="{{ url_for('farmer_logout') }}">{{ t('logout') }}</a></p>
+        {% endif %}
+        <form method="POST" action="{{ url_for('farmer_login') }}" class="panel-form">
+            <label>{{ t('label_name') }}
+                <input type="text" name="name" required>
+            </label>
+            <label>{{ t('label_phone') }}
+                <input type="tel" name="phone" pattern="[0-9]{10}" maxlength="10" required placeholder="{{ t('placeholder_phone') }}">
+            </label>
+            <label>{{ t('label_email') }}
+                <input type="email" name="email" placeholder="{{ t('placeholder_email') }}">
+            </label>
+            <label>{{ t('label_village') }}
+                <input type="text" name="village" required>
+            </label>
+            <button type="submit" class="btn btn-primary btn-block">{{ t('btn_farmer_continue') }}</button>
+        </form>
+    </div>
+
+    <div class="login-panel admin-theme" id="admin-panel">
+        <div class="panel-icon">🧑‍💼</div>
+        <h2>{{ t('admin_panel_heading') }}</h2>
+        <p class="panel-desc">{{ t('admin_panel_desc') }}</p>
+        {% if current_admin_email %}
+        <p class="logged-in-note">{{ t('logged_in_as') }}: <strong>{{ current_admin_email }}</strong> ({{ current_admin_center }}) — <a href="{{ url_for('admin_logout') }}">{{ t('logout') }}</a></p>
+        {% endif %}
+        <form method="POST" action="{{ url_for('admin_login') }}" class="panel-form">
+            <label>{{ t('label_name') }}
+                <input type="text" name="name">
+            </label>
+            <label>{{ t('label_email') }}
+                <input type="email" name="email" required placeholder="{{ t('placeholder_email') }}">
+            </label>
+            <label>{{ t('label_phone') }}
+                <input type="tel" name="phone" pattern="[0-9]{10}" maxlength="10" required placeholder="{{ t('placeholder_phone') }}">
+            </label>
+            <label>{{ t('label_center_id') }}
+                <input type="text" name="center_code" required placeholder="{{ t('placeholder_center_id') }}" list="center-codes">
+                <datalist id="center-codes">
+                    {% for city, centers in centers_by_city.items() %}
+                        {% for c in centers %}
+                        <option value="{{ c.code }}">{{ c.name }} ({{ city }})</option>
+                        {% endfor %}
+                    {% endfor %}
+                </datalist>
+            </label>
+            <button type="submit" class="btn btn-primary btn-block">{{ t('btn_admin_continue') }}</button>
+        </form>
+    </div>
+</div>
+
+<h2>{{ t('nearby_centers_heading') }}</h2>
+{% for city, centers in centers_by_city.items() %}
+<h3 class="city-heading">🏙️ {{ city }}</h3>
+<div class="card-grid">
+    {% for c in centers %}
+    <div class="card card-anim">
+        <div class="card-icon">🏬</div>
+        <h3>{{ c.name }}</h3>
+        <p><span class="code-badge">{{ c.code }}</span></p>
+        <p>{{ c.location }}</p>
+        <p><small>{{ t('accepts_label') }}: {{ c.crop_types }}</small></p>
+    </div>
+    {% endfor %}
+</div>
+{% endfor %}
+{% endblock %}

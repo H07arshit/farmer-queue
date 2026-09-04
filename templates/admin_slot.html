@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}{{ t('btn_manage') }}{% endblock %}
+{% block content %}
+<h1>{{ slot.center_name }} — {{ slot.slot_date }} {{ slot.start_time }}</h1>
+
+<form method="POST" action="{{ url_for('call_next', slot_id=slot.id) }}">
+    <button type="submit" class="btn btn-primary">{{ t('call_next_btn', n=slot.current_token) }}</button>
+</form>
+
+<table class="data-table">
+    <thead>
+        <tr><th>{{ t('th_token') }}</th><th>{{ t('th_farmer') }}</th><th>{{ t('th_phone') }}</th><th>{{ t('th_crop') }}</th><th>{{ t('th_est_qty') }}</th>
+            <th>{{ t('th_status') }}</th><th>{{ t('th_actual_qty') }}</th><th>{{ t('th_amount') }}</th><th>{{ t('th_update') }}</th></tr>
+    </thead>
+    <tbody>
+        {% for b in bookings %}
+        <tr>
+            <td>#{{ b.token_number }}</td>
+            <td>{{ b.farmer_name }}</td>
+            <td>{{ b.phone }}</td>
+            <td>{{ b.crop_type }}</td>
+            <td>{{ b.est_quantity_kg }}</td>
+            <td><span class="badge badge-{{ b.status|lower }}">{{ b.status }}</span></td>
+            <td>{{ b.actual_quantity_kg or '—' }}</td>
+            <td>{{ b.amount_paid or '—' }}</td>
+            <td>
+                <form method="POST" action="{{ url_for('update_booking_status', booking_id=b.id) }}" class="inline-form">
+                    {% if b.status == 'BOOKED' %}
+                        <input type="hidden" name="status" value="ARRIVED">
+                        <button type="submit" class="btn btn-sm">{{ t('btn_mark_arrived') }}</button>
+                    {% elif b.status == 'ARRIVED' %}
+                        <input type="hidden" name="status" value="PROCURED">
+                        <input type="number" step="0.1" name="actual_quantity_kg" placeholder="{{ t('placeholder_actual_qty') }}" required class="input-sm">
+                        <button type="submit" class="btn btn-sm">{{ t('btn_mark_procured') }}</button>
+                    {% elif b.status == 'PROCURED' %}
+                        <input type="hidden" name="status" value="PAID">
+                        <input type="number" step="0.01" name="amount_paid" placeholder="{{ t('placeholder_amount') }}" required class="input-sm">
+                        <button type="submit" class="btn btn-sm">{{ t('btn_mark_paid') }}</button>
+                    {% else %}
+                        <em>{{ t('complete_label') }}</em>
+                    {% endif %}
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
