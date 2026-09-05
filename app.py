@@ -322,39 +322,186 @@ def book_slot(farmer_id):
 # ---------------------------------------------------------------------------
 # Public: farmer self-service status lookup
 # ---------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
+# Smart estimated waiting time
+# ---------------------------------------------------------------------------
+
+AVERAGE_SERVICE_MINUTES = 10
+
+
+def calculate_waiting_time(db, booking):
+    """
+    Estimate waiting time for a farmer.
+
+    The estimate is based on:
+    - current token being served
+    - farmer's token number
+    - active bookings ahead
+    - average processing time per farmer
+
+    This is a smart queue estimate. It can later be upgraded
+    to a machine-learning model using historical procurement data.
+    """
+
+    token = booking["token_number"]
+    current_token = booking["current_token"]
+    slot_id = booking["slot_id"]
+
+    # Already being served or completed
+    if token <= current_token:
+        return 0
+
+    # Count active farmers ahead of this farmer
+    people_ahead = db.execute(
+        """
+        SELECT COUNT(*) AS count
+        FROM bookings
+        WHERE slot_id = ?
+          AND token_number > ?
+          AND token_number < ?
+          AND status NOT IN ('CANCELLED', 'PROCURED', 'PAID')
+        """,
+        (slot_id, current_token, token),
+    ).fetchone()["count"]
+
+    # Add the farmer currently being served if applicable
+    current_booking = db.execute(
+        """
+        SELECT status
+        FROM bookings
+        WHERE slot_id = ?
+          AND token_number = ?
+        """,
+        (slot_id, current_token),
+    ).fetchone()
+
+    if current_booking and current_booking["status"] not in ("PROCURED", "PAID", "CANCELLED"):
+        people_ahead += 1
+
+    waiting_minutes = people_ahead * AVERAGE_SERVICE_MINUTES
+
+    return waiting_minutes
+
+
+def format_waiting_time(minutes):
+    """Convert minutes into a farmer-friendly message."""
+
+    if minutes <= 0:
+        return {
+            "text": "Your turn is next",
+            "minutes": 0,
+            "class": "wait-now",
+        }
+
+    if minutes < 60:
+        return {
+            "text": f"~{minutes} minutes",
+            "minutes": minutes,
+            "class": "wait-short",
+        }
+
+    hours = minutes // 60
+    remaining = minutes % 60
+
+    if remaining == 0:
+        text = f"~{hours} hour"
+        if hours != 1:
+            text += "s"
+    else:
+        text = f"~{hours}h {remaining}m"
+
+    return {
+        "text": text,
+        "minutes": minutes,
+        "class": "wait-long",
+    }
+
+
+# ---------------------------------------------------------------------------
+# Public: farmer self-service status lookup
+# ---------------------------------------------------------------------------
+
 @app.route("/status", methods=["GET"])
 def my_status():
     db = get_db()
+
     phone = request.args.get("phone", "").strip()
+
     farmer = None
     bookings = []
+
     if phone:
-        farmer = db.execute("SELECT * FROM farmers WHERE phone=?", (phone,)).fetchone()
+        farmer = db.execute(
+            "SELECT * FROM farmers WHERE phone=?",
+            (phone,),
+        ).fetchone()
+
         if farmer:
-            bookings = db.execute(
-                """SELECT b.*, s.slot_date, s.start_time, s.current_token, c.name AS center_name
-                   FROM bookings b
-                   JOIN slots s ON b.slot_id = s.id
-                   JOIN centers c ON s.center_id = c.id
-                   WHERE b.farmer_id = ?
-                   ORDER BY b.created_at DESC""",
+
+            raw_bookings = db.execute(
+                """
+                SELECT
+                    b.*,
+                    s.slot_date,
+                    s.start_time,
+                    s.current_token,
+                    c.name AS center_name
+                FROM bookings b
+                JOIN slots s ON b.slot_id = s.id
+                JOIN centers c ON s.center_id = c.id
+                WHERE b.farmer_id = ?
+                ORDER BY b.created_at DESC
+                """,
                 (farmer["id"],),
             ).fetchall()
+
+            # Add estimated waiting time to every booking
+            for booking in raw_bookings:
+
+                waiting_minutes = calculate_waiting_time(
+                    db,
+                    booking
+                )
+
+                waiting = format_waiting_time(
+                    waiting_minutes
+                )
+
+                booking_data = dict(booking)
+
+                booking_data["waiting_minutes"] = waiting["minutes"]
+                booking_data["waiting_time"] = waiting["text"]
+                booking_data["waiting_class"] = waiting["class"]
+
+                bookings.append(booking_data)
+
         else:
-            flash(tr("flash_no_registration"), "error")
+            flash(
+                tr("flash_no_registration"),
+                "error"
+            )
 
     notifications = []
+
     if farmer:
         notifications = db.execute(
-            "SELECT * FROM notifications WHERE farmer_id=? ORDER BY id DESC LIMIT 10",
+            """
+            SELECT *
+            FROM notifications
+            WHERE farmer_id=?
+            ORDER BY id DESC
+            LIMIT 10
+            """,
             (farmer["id"],),
         ).fetchall()
 
     return render_template(
-        "status.html", farmer=farmer, bookings=bookings, notifications=notifications, phone=phone
+        "status.html",
+        farmer=farmer,
+        bookings=bookings,
+        notifications=notifications,
+        phone=phone,
     )
-
-
 # ---------------------------------------------------------------------------
 # Public: live queue display board (e.g. shown on a screen at the centre)
 # ---------------------------------------------------------------------------

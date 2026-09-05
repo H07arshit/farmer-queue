@@ -3699,3 +3699,164 @@ footer {
             none;
     }
 }
+/* =========================================================
+   SMART WAITING TIME
+   ========================================================= */
+
+.queue-info-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    margin: 18px 0 20px;
+    padding: 18px 20px;
+
+    background: linear-gradient(
+        135deg,
+        #fffaf0,
+        #fffef9
+    );
+
+    border: 1px solid #ead9ad;
+    border-left: 5px solid #c99116;
+
+    border-radius: 14px;
+
+    box-shadow:
+        0 6px 18px rgba(80, 60, 20, 0.08);
+}
+
+.queue-info-icon {
+    width: 46px;
+    height: 46px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    background: #fff1c7;
+
+    border-radius: 50%;
+
+    font-size: 24px;
+}
+
+.queue-info-card strong {
+    display: block;
+
+    color: #6d5010;
+
+    font-size: 1rem;
+}
+
+.queue-info-card p {
+    margin: 3px 0 0;
+
+    color: #766d5b;
+
+    font-size: 0.85rem;
+}
+
+
+/* Waiting-time badge */
+
+.waiting-badge {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    min-width: 105px;
+
+    padding: 7px 11px;
+
+    border-radius: 999px;
+
+    font-size: 0.78rem;
+
+    font-weight: 800;
+
+    white-space: nowrap;
+}
+
+
+/* Your turn */
+
+.wait-now {
+    color: #216c2a;
+
+    background: #e9f6e8;
+
+    border: 1px solid #c7e4c5;
+}
+
+
+/* Short wait */
+
+.wait-short {
+    color: #8a6400;
+
+    background: #fff5d9;
+
+    border: 1px solid #ead9a7;
+}
+
+
+/* Longer wait */
+
+.wait-long {
+    color: #a33b20;
+
+    background: #fff0e9;
+
+    border: 1px solid #f0c8b8;
+}
+
+
+/* Table responsive wrapper */
+
+.status-table-wrapper {
+    width: 100%;
+
+    overflow-x: auto;
+
+    margin-bottom: 30px;
+
+    border-radius: 15px;
+}
+
+
+/* Keep waiting column readable */
+
+.data-table th:nth-child(6),
+.data-table td:nth-child(6) {
+    min-width: 145px;
+}
+
+
+/* Mobile */
+
+@media (max-width: 700px) {
+
+    .queue-info-card {
+        align-items: flex-start;
+
+        padding: 15px;
+    }
+
+    .queue-info-icon {
+        width: 40px;
+        height: 40px;
+
+        font-size: 20px;
+    }
+
+    .waiting-badge {
+        min-width: 100px;
+
+        font-size: 0.74rem;
+    }
+
+}
